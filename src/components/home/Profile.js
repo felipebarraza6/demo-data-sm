@@ -1,6 +1,6 @@
 import React, {useReducer, useEffect, useState } from 'react'
 
-import {Button, Spin, Modal, Table, Drawer, Row, Col, Divider } from 'antd'
+import {Button, Modal, Table, Drawer, Row, Col, Divider } from 'antd'
 import {BorderlessTableOutlined, UserOutlined} from '@ant-design/icons'
 
 import { reducer } from '../../reducers/profile.js'
