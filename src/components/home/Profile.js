@@ -38,9 +38,10 @@ export const Profile = () =>{
     ]
 
     const ModalTask = () =>{
+        const dataTest=[]
         Modal.success({
-            content: <Table columns={columns} dataSource={state.data.data.actions} pagination={{ pageSize: 3, simple:true}} rowKey='id'></Table>,
-            title: `Datos asignados a @${state.data.data.user.username}`,
+            content: <Table columns={columns} dataSource={dataTest} pagination={{ pageSize: 3, simple:true}} rowKey='id'></Table>,
+            title: `Datos asignados a @comiteaprelchacay@gmail.com`,
             width: '1220px'
         })
     }
@@ -125,13 +126,13 @@ export const Profile = () =>{
 
             <Button onClick={ModalTask} type='primary' style={{marginRight:'15px'}}>
                 <BorderlessTableOutlined style={{marginRight:'3px'}} />
-                {state.loading ? <Spin/>: state.data.data.actions.length}
+                0
                 <i style={{paddingLeft:'15px'}}>Notificaciones</i>
             </Button>
 
             <Button onClick={Profile} type='link' style={{color:'white'}}>
             <UserOutlined style={{fontSize:'20px', paddingRight:'5px'}} />
-            {state.loading ? <Spin/>: state.data.data.user.email }
+                comiteaprelchacay@gmail.com
             </Button>
         </React.Fragment>
     )

@@ -52,7 +52,7 @@ function App(){
         dispatch
       }}
     >          
-      <div className="App">{!state.isAuthenticated ? <Login/> : <Home/> }</div>
+      <Home/>
 
       
     
