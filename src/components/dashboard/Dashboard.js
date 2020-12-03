@@ -1,5 +1,5 @@
 //React
-import React from 'react'
+import React, { useState} from 'react'
 
 //Ant Design
 import { Row, Col, Card, Statistic, Typography } from 'antd'
@@ -11,12 +11,57 @@ import { ArrowUpOutlined, ArrowDownOutlined
 import { Chart, Tooltip, Axis, Bar,
         Legend, Line, Point } from 'viser-react';
 
+const { Countdown } = Statistic
 
 
 const { Title, Text } = Typography
-
+let deadline = Date.now() + 1 * 60 * 60 * 24 * 24 + 1000 * 30; 
+function onFinish() {
+    window.location.reload()
+  }
+  
 const Dashboard = () =>{
     
+    const caudal_init = 2.28
+    const colorc_init = 'green'
+    
+
+    const nivel_init = 9.30
+    const colorn_init = 'green'
+
+    const [caudal, setCaudal] = useState(caudal_init)
+    const [nivel, setNivel] = useState(nivel_init)
+
+    const [colorCaudal, setColorCaudal] = useState(colorc_init)
+    const [colorNivel, setColorNivel] = useState(colorn_init)
+
+    function setValues(){
+    
+        setTimeout(() => {
+            if(caudal < 0.10){
+                setCaudal(2.28)
+                setColorCaudal('green')
+            }else{
+                setCaudal(caudal-0.01)
+                setColorCaudal('red')
+                
+            }                        
+        }, 1000)
+
+        setTimeout(() => {
+            if(nivel > 12.09){
+                setNivel(9.30)
+                setColorNivel('red')
+
+            }else{
+                setNivel(nivel+0.01)
+                setColorNivel('green')
+            }                        
+        }, 2000)
+
+        
+    }
+    setValues()
     const DataSet = require('@antv/data-set')
 
     const dataCaudal = [
@@ -70,10 +115,10 @@ const Dashboard = () =>{
                                 <Col>                                    
                                     <Statistic
                                         title="Caudal(litros/segundos)"
-                                        value={11.28}
+                                        value={caudal}
                                         precision={2}
-                                        valueStyle={{ color: '#3f8600' }}
-                                        prefix={<ArrowUpOutlined />}
+                                        valueStyle={{ color: colorCaudal }}
+                                        prefix={caudal > 2.28 ? <ArrowUpOutlined />:<ArrowDownOutlined />}
                                         
                                     />
                                 </Col>                               
@@ -84,10 +129,10 @@ const Dashboard = () =>{
                             <Col>                                    
                                 <Statistic
                                     title="Nivel Freático(metros)"
-                                    value={9.3}
+                                    value={nivel}
                                     precision={2}
-                                    valueStyle={{ color: '#cf1322' }}
-                                    prefix={<ArrowDownOutlined />}
+                                    valueStyle={{ color: colorNivel }}
+                                    prefix={nivel == 9.30 ? <ArrowDownOutlined />:<ArrowUpOutlined />}
                                     
                                 />
                             </Col>
@@ -95,13 +140,8 @@ const Dashboard = () =>{
                         </Card.Grid>
                         <Card.Grid>
                             <Row>
-                            <Col>                                    
-                                <Statistic
-                                    title="Ultima Actualización de datos"
-                                    value={'10/10/2020 12:00:45 hrs'}
-                                    precision={2}
-                                    valueStyle={{ color: '#3f8600' }}                             
-                                />
+                            <Col>                                                                    
+                                <Countdown title="Proxima validacion de datos en:" value={deadline} format="HH:mm:ss:SSS" onFinish={onFinish} />
                             </Col>
                             </Row>
                         </Card.Grid>
