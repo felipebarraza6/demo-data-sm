@@ -132,7 +132,7 @@ const Dashboard = () =>{
                                     value={nivel}
                                     precision={2}
                                     valueStyle={{ color: colorNivel }}
-                                    prefix={nivel == 9.30 ? <ArrowDownOutlined />:<ArrowUpOutlined />}
+                                    prefix={nivel === 9.30 ? <ArrowDownOutlined />:<ArrowUpOutlined />}
                                     
                                 />
                             </Col>
