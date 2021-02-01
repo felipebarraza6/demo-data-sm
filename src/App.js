@@ -6,13 +6,10 @@ import { login_reducer } from './reducers/auth.js'
 
 // Containers
 import Home from './containers/Home'
-//import Login from './containers/Login'
-
-
+import Login from './containers/Login'
 
 // Create Contexts
 export const AuthContext = React.createContext()
-
 
 
 const initialState = {
@@ -51,8 +48,11 @@ function App(){
         state,
         dispatch
       }}
-    >          
-      <Home/>
+    > 
+    {state.isAuthenticated ?
+      <Home />:
+      <Login />
+    }
 
       
     

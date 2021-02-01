@@ -71,7 +71,7 @@ export const Login = () => {
         <div className="login">
             <div className="head-login">
                 <img alt='logo' src={logo} />
-                <p style={{color:'white', opacity:'0.4', textAlign:'center'}}>CRM - Gestión de tareas y clientes.</p>
+                <p style={{color:'white', opacity:'0.4', textAlign:'center'}}>SISTEMA DE MONITOREO</p>
             </div>
             
         <Form

@@ -1,15 +1,17 @@
-import React, {useReducer, useEffect, useState } from 'react'
+import React, {useReducer, useEffect, useState, useContext } from 'react'
 
-import {Button, Modal, Table, Drawer, Row, Col, Divider } from 'antd'
-import {BorderlessTableOutlined, UserOutlined} from '@ant-design/icons'
+import {Button, Drawer, Row, Col, Divider } from 'antd'
+import {UserOutlined} from '@ant-design/icons'
 
 import { reducer } from '../../reducers/profile.js'
 import api from '../../api/endpoints'
-
-
+import { AuthContext } from '../../App'
 
 export const Profile = () =>{
 
+    const userContext = useContext(AuthContext)
+    const userData = userContext.state.user
+   
     const initialState = {
         loading: true,
         data:  null,
@@ -17,36 +19,6 @@ export const Profile = () =>{
     }
 
     const [state, dispatch] = useReducer(reducer, initialState)
-
-    const columns = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: 'Caudal(ltrs/seg)',
-            dataIndex: 'client',
-            key: 'client'
-        },
-        {
-            title: 'Nivel Freático(mtrs)',
-            dataIndex: 'employee',
-            key: 'employee'
-        }       
-        
-    ]
-
-    const ModalTask = () =>{
-        const dataTest=[]
-        Modal.success({
-            content: <Table columns={columns} dataSource={dataTest} pagination={{ pageSize: 3, simple:true}} rowKey='id'></Table>,
-            title: `Datos asignados a @comiteaprelchacay@gmail.com`,
-            width: '1220px'
-        })
-    }
-
-
     const [profile, setProfile] = useState({visible:false})
 
     const Profile = () =>{
@@ -69,7 +41,6 @@ export const Profile = () =>{
 
             try{
                 const response = await api.user.profile()
-
                 if(!isCalled){
                     dispatch({
                         type: 'GET_PROFILE',
@@ -84,13 +55,12 @@ export const Profile = () =>{
                 })
             }
         }
-
+        
         fetchData()
 
         return () => {
             isCalled = true
         }
-
     }, [])
     
     return (
@@ -123,16 +93,9 @@ export const Profile = () =>{
                 </Drawer>
             }
             
-
-            <Button onClick={ModalTask} type='primary' style={{marginRight:'15px'}}>
-                <BorderlessTableOutlined style={{marginRight:'3px'}} />
-                0
-                <i style={{paddingLeft:'15px'}}>Notificaciones</i>
-            </Button>
-
             <Button onClick={Profile} type='link' style={{color:'white'}}>
             <UserOutlined style={{fontSize:'20px', paddingRight:'5px'}} />
-                comiteaprelchacay@gmail.com
+                {userData.email}
             </Button>
         </React.Fragment>
     )

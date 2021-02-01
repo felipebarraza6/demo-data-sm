@@ -22,6 +22,7 @@ const { Header, Content, Sider } = Layout
 
 
 const Home = () =>{
+        
         return(
           <BrowserRouter>
             <Layout style={{ minHeight: '100vh' }}>            
@@ -47,7 +48,7 @@ const Home = () =>{
             </Header>
               <Content>
                 
-                <div style={{ padding: 24, minHeight: 360, textAlign:'left' }}>
+                <div style={{ padding: 24, minHeight: 360, textAlign:'left', overflow:'none' }}>
                   <Switch>                
                     <Route exact path='/' component={Dashboard} />
                     <Route path="*" component={NotFound} />
