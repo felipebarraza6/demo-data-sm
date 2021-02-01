@@ -1,0 +1,9 @@
+version: '3'
+
+
+services:
+    react:
+        build: .
+        image: app_sh
+        ports: 
+          - '80:80'
