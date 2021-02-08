@@ -2,15 +2,11 @@
 import React, { useState, useEffect} from 'react'
 
 //Ant Design
-import { Row, Col, Card, Statistic, Typography } from 'antd'
+import { Row, Col, Table, Statistic, Typography } from 'antd'
 
 //Components
-import { Chart, Tooltip, Axis, Bar,
-        Legend, Line, Point } from 'viser-react';
-
 import {getting_list} from '../../novus_toga/endpoints'
-const DataSet = require('@antv/data-set')
-
+import { Line } from '@reactchartjs/react-chart.js'
 
 const { Countdown } = Statistic
 const { Title } = Typography
@@ -22,9 +18,21 @@ function onFinish() {
   }
   
 const Dashboard = () =>{
+  
+    var optionsLines = {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: false,
+            },
+          },
+        ],
+      },
+    }
     
     var date_7_days = new Date() 
-    date_7_days.setDate(date_7_days.getDate() -7)  
+    date_7_days.setDate(date_7_days.getDate() -30)  
     let day = date_7_days.getDate()
     let month = date_7_days.getMonth() + 1
     let year= date_7_days.getFullYear()
@@ -47,23 +55,23 @@ const Dashboard = () =>{
       'values': null,
       'start_date': string_date,
       'end_date': string_date_today,
-      'prom':0,
-      'last_values': null
+      'last_values': null,
+      'dataCharts':null
     }  
     
     const initialFlow = {
       'values': null,
       'start_date': string_date,
       'end_date': string_date_today,
-      'prom': 0,
-      'last_values': null  
+      'last_values': null,
+      'dataCharts': null
       }
 
     const [freatic, setFreatic] = useState(initialFreatic)
     const [flow, setFlow] = useState(initialFlow)  
     
-    const last_freatic = freatic.last_values
-    const last_flow = flow.last_values
+   const config_freatic = {}
+   var config_flow = {}
 
     useEffect(()=> {
         
@@ -76,7 +84,7 @@ const Dashboard = () =>{
               '3grecuc1v',
               freatic.start_date,
               freatic.end_date,
-              '999'
+              '100000'
           ).then((response)=> {
               if(response.status === 200){
                   const values_freatic = response.data.result
@@ -89,33 +97,47 @@ const Dashboard = () =>{
                   prom = calc
               }
           })
-          const request_last = await getting_list(
-              '3grecuc1v',
-              freatic.start_date,
-              freatic.end_date,
-              '7'
-          ).then((response)=>{
-              if(response.status === 200){
-                  last_values = response.data.result
-              }
-          })
-
-            last_values.map((element, index)=>{
-                last_values[index] = {
-                  ...last_values[index],
-                  'date_format':`${element.time.slice(5,10)} / ${element.time.slice(12,20)}Hrs`,
-                  'MTRS': element.value
-                }
+          var dates_labels= []
+          var dates_string=[]
+          var data_values=[]
+          var data_numbers=[]
+          values.map((element, index)=>{
+            values[index] = {
+              ...values[index],
+              'date_format':`${element.time.slice(5,10)}`,
+              'date_table': `${element.time.slice(0,10)} - ${element.time.slice(11,19)} hrs.`,
+              'MTRS': element.value
+            }
+            if(!dates_labels.includes(values[index].date_format)){
+              dates_labels[index] = values[index].date_format
+              dates_string.push(values[index].date_format)
+             }
+            if(!data_values.includes(values[index].value)){
+              data_values[index] = values[index].value
+              data_numbers.push(values[index].value)
+             }
             })
+
             setFreatic({
                 ...freatic,
                 values: values,
                 prom: prom,
-                last_values: last_values
+                last_values: last_values,
+                dataCharts: {
+                 labels: dates_string,
+                 datasets: [
+                      {
+                         label: 'Flujo - LTRS',
+                         data: data_numbers,
+                         fill:false,
+                         backgroundColor: 'rgb(1, 15, 119)',
+                         borderColor: 'rgba(1, 15, 119, 0.2)',
+                       }
+                      ]
+                      }
             })
             return {
                 request_all,
-                request_last
             }
         }
 
@@ -128,108 +150,115 @@ const Dashboard = () =>{
               '3grecuc2v',
               flow.start_date,
               flow.end_date,
-              '999'
+              '10000'
           ).then((response)=>{
-              if(response.status === 200){
-                  const values_flow = response.data.result
-                  let calc = 0
-                  values_flow.map((element)=>calc+=element.value)
-                  calc = calc / values_flow.length
-                  values = response.data.result
-                  prom = calc
-             }
-
+            if(response.status === 200){
+                const values_flow = response.data.result
+                let calc = 0
+                values_flow.map((element)=>calc+=element.value)
+                calc = calc / values_flow.length
+                values = response.data.result
+                prom = calc
+            }
           })
-          const request_last = await getting_list(
-              '3grecuc2v',
-              flow.start_date,
-              flow.end_date,
-              '7'
-          ).then((response)=>{
-              if(response.status === 200){
-                last_values=response.data.result  
-              }
+          var dates_labels = []
+          var dates_string = []
+          var data_values = []
+          var data_numbers = []
+          values.map((element, index)=> {
+            values[index] = {
+              ...values[index],
+              'date_format':`${element.time.slice(5,10)}`,
+              'date_table': `${element.time.slice(0,10)} - ${element.time.slice(11,19)} hrs.`,
+              'LTRS': element.value
+            }
+            if(!dates_labels.includes(values[index].date_format)){
+              dates_labels[index] = values[index].date_format
+              dates_string.push(values[index].date_format)
+            }
+            if(!data_values.includes(values[index].value)){
+              data_values[index] = values[index].value
+              data_numbers.push(values[index].value)
+            }
           })
-          last_values.map((element, index)=> {
-                last_values[index] = {
-                    ...last_values[index],
-                    'date_format':`${element.time.slice(5,10)} / ${element.time.slice(12,20)}Hrs`,
-                    'LTRS': element.value
-                }
-          })
+          
           setFlow({
               ...flow,
               values: values,
               prom: prom,
-              last_values: last_values
+              last_values: last_values,
+              dataCharts: {
+                  labels: dates_string,
+                  datasets: [
+                    {
+                      label: 'Flujo - LTRS',
+                      data: data_numbers,
+                      fill:false,
+                      backgroundColor: 'rgb(1, 15, 119)',
+                      borderColor: 'rgba(1, 15, 119, 0.2)',
+                    }
+                  ]
+              }
 
           })
           return {
-              request_all,
-              request_last
+              request_all
           }
         }
         get_flow()
         get_freatic()
     
     },[])
-    
-   
-    return(
-            <>          
-            <Row>
-                <Col span={24}>
-                    <Card>
-                        <Card.Grid>
-                            <Row>                                
-                                <Col>                                    
-                                    <Statistic
-                                        title="Nivel Freatico / Metros"
-                                        value={freatic.prom}
-                                       // valueStyle={{ color: colorCaudal }}
-                                    />
-                                </Col>                               
-                            </Row>
-                        </Card.Grid >
-                        <Card.Grid>
-                            <Row>
-                            <Col>                                    
-                                <Statistic
-                                    title="Flujo / Litros"
-                                    value={flow.prom}
-                                   // valueStyle={{ color: colorNivel }}
-                                />
-                            </Col>
-                            </Row>
-                        </Card.Grid>
-                        <Card.Grid>
-                            <Row>
-                            <Col>                                                                    
-                                <Countdown title="Proxima validacion de datos en:" value={deadline} format="HH:mm:ss:SSS" onFinish={onFinish} />
-                            </Col>
-                            </Row>
-                        </Card.Grid>
-                    </Card>
-                </Col>
-            </Row>            
-            <Row style={{marginTop:'40px'}}> 
-                <Col span={24}>
-                    <Title level={4} style={{textAlign:'center'}}>Nivel Freático / Metros</Title>
-                    <Chart autoFill width={1100} height={400} data={freatic.last_values}>
-                        <Tooltip shared = {true} />
-                        <Axis />
-                        <Bar position="date_format*MTRS" />
-                    </Chart>
-                </Col>
+    var columsFlow = []
+    if(flow.dataCharts){
+    columsFlow = [
+      {
+        title:'Variable',
+        dataIndex: 'variable',
+        key: 'variable'
+      },
+      {
+        title:'Mes',
+        dataIndex:'date_table',
+        key:'date_format',
 
-                <Col span={24} >
+      },
+      {
+        title:'Valor',
+        dataIndex:'value',
+        key:'value'
+      }
+
+    ]
+      }
+  console.log(flow.values)
+      
+    
+       return(
+            <>          
+                   
+            <Row style={{marginTop:'40px'}}> 
+              <Col span={8} style={{marginLeft:'20px'}}>
+              <Table size='middle' dataSource={freatic.values} columns={columsFlow}  />
+              </Col>
+                <Col span={15} style={{marginRight:'20px'}}>
+                    <Title level={4} style={{textAlign:'center'}}>Nivel Freático / Metros</Title>
+                    {freatic.values &&
+                      <Line data={freatic.dataCharts} options={optionsLines} />
+                    }
+               </Col>
+                <Col span={15} style={{marginLeft:'20px', marginTop:'100px'}} >
                     <Title level={4} style={{textAlign:'center'}}>Flujo / Litros</Title>
-                    <Chart width={1100} height={400} data={flow.last_values}>
-                        <Tooltip />
-                        <Axis />
-                        <Bar position="date_format*LTRS" />
-                    </Chart>
-                    
+                    {flow.values &&
+
+                        <Line data= {flow.dataCharts}  options = {optionsLines} />
+                    }
+                </Col>
+                <Col span={8} style={{marginRight: '20px', marginTop:'100px'}}>
+                  <Table
+                      size='middle'
+                      dataSource = {flow.values} 
+                      columns={columsFlow} />
                 </Col>
             </Row>
             </>
