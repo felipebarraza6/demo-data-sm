@@ -127,7 +127,7 @@ const Dashboard = () =>{
                  labels: dates_string,
                  datasets: [
                       {
-                         label: 'Flujo - LTRS',
+                         label: 'Nivel Freático - MTRS',
                          data: data_numbers,
                          fill:false,
                          backgroundColor: 'rgb(1, 15, 119)',
