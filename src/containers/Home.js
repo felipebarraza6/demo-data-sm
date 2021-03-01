@@ -2,10 +2,7 @@
 import React from 'react'
 
 //Antd
-import { Layout, Menu  } from 'antd'
-
-// Antd Icons
-import { DashboardOutlined } from '@ant-design/icons'
+import { Layout  } from 'antd'
 
 //Build
 import logo from '../build/images/logo-white.png'
@@ -16,9 +13,8 @@ import Dashboard from '../components/dashboard/Dashboard'
 import NotFound from '../components/errors/NotFound'
 
 // React Router
-import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
-
-const { Header, Content, Sider } = Layout
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+const { Header, Content } = Layout
 
 
 const Home = () =>{
@@ -26,29 +22,13 @@ const Home = () =>{
         return(
           <BrowserRouter>
             <Layout style={{ minHeight: '100vh' }}>            
-            <Sider style={{padding:'20px'}}>
-              <div style={{alignItems:'center'}}>
-                  <img alt='logo' style={{width:'90%', marginRight:'50px', marginTop:'40px', marginBottom:'40px'}} src={logo} />
-              </div>
-              
-              <Menu theme="dark" mode="inline">
-                <Menu.Item key="1">
-                    <Link to="/">
-                    <DashboardOutlined style={{marginRight:'5px'}}/>
-                     Panel de Datos
-                     </Link>
-                </Menu.Item>                 
-              </Menu>
-              
-            </Sider>
-
-            <Layout>              
             <Header >
+                <img width={'100px'}  src = {logo} />
                 <MenuHeader />                                        
             </Header>
               <Content>
                 
-                <div style={{ padding: 24, minHeight: 360, textAlign:'left', overflow:'none' }}>
+                <div style={{ textAlign:'center', overflow:'true' }}>
                   <Switch>                
                     <Route exact path='/' component={Dashboard} />
                     <Route path="*" component={NotFound} />
@@ -56,7 +36,6 @@ const Home = () =>{
                 </div>
                 
               </Content>              
-            </Layout>
 
           </Layout>
           </BrowserRouter>
